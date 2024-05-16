@@ -5,6 +5,7 @@ var logger = require('morgan');
 
 var userRoutes=require("./routes/nameRouter");
 var authRoutes=require("./routes/authRouter");
+var adminRoutes=require("./routes/adminRouter");
 
 var app = express();
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 app.use("/users",userRoutes);
 app.use("/auth", authRoutes);
+app.use(adminRoutes);
 
 
 // catch 404 and forward to error handler
