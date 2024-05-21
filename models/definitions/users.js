@@ -26,3 +26,5 @@ users.init(
     sequelize,
   }
 );
+
+module.exports = users;
