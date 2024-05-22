@@ -7,6 +7,7 @@ tasks.init(
   {
     taskId: {
       primaryKey: true,
+      type: DataTypes.STRING(255),
     },
   },
   {

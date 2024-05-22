@@ -1,10 +1,9 @@
 const sequelize = require("../bin/dbConnection");
-const {
-  users,
-  tasks,
-  userHasTasks,
-  tasksHasUsers,
-} = require("./definitions/users");
+
+const { users } = require("./definitions/users");
+const { tasks } = require("./definitions/tasks");
+const { userHasTasks } = require("./definitions/userHasTasks");
+const { tasksHasUsers } = require("./definitions/tasksHasUsers");
 
 const models = { users, tasks, userHasTasks, tasksHasUsers };
 

@@ -7,6 +7,7 @@ tasksHasUsers.init(
   {
     tasksHasUsers: {
       primaryKey: true,
+      type: DataTypes.STRING(255),
     },
   },
   {
