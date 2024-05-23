@@ -1,30 +1,25 @@
 const joi = require("joi");
+const userService = require("../services/userService");
 
 const createUserSchema = joi.object().keys({
-  userName: joi.string().email().required(),
+  userName: joi.string().alphanum().min(3).max(34).required(),
+  // email: joi.string().email().required(),
   password: joi.string().min(6).max(18).required(),
+  confirmPassword: joi.ref("password"),
 });
-const getUserSchema = joi.object().keys({
-  userName: joi.string().email().required(),
-});
-
-const updatePasswordSchema = joi.object().keys({
-  userName: joi.string().email().required(),
-  password: joi.string().min(6).max(18).required(),
-});
-
-const userArray = [];
 
 module.exports = {
   createUser: async (req, res) => {
     try {
       const validate = await createUserSchema.validateAsync(req.body);
-      userArray.push(validate);
-      console.log(userArray);
-
+      const user = await userService.createUser(validate);
+      if (user.error) {
+        return res.send({
+          error: "user already exists",
+        });
+      }
       return res.send({
-        message: "Created User",
-        data: validate,
+        response: user.response,
       });
     } catch (error) {
       return res.send({
@@ -35,14 +30,6 @@ module.exports = {
   getUser: async (req, res) => {
     try {
       const validate = await getUserSchema.validateAsync(req.query);
-      let getUser = (item) => {
-        if (item.userName === validate.userName) {
-          return item;
-        } else {
-          return "User not found";
-        }
-      };
-      let user1 = userArray.map(getUser);
       return res.send({
         message: "Got User",
         data: user1,
@@ -53,25 +40,11 @@ module.exports = {
       });
     }
   },
-  updateUser: async (req, res) => {
+  getAllUsers: async (req, res) => {
     try {
-      const validate = await updatePasswordSchema.validateAsync(req.body);
-      let getUser = (item) => {
-        if (item.userName === validate.userName) {
-          return item;
-        } else {
-          return "User not found";
-        }
-      };
-      let user1 = userArray.map(getUser);
-      // const { user } = user1[0];
-      console.log(user1);
-      let olduser = user1[0];
-      // user1[0].password = validate.password;
+      const users = await userService.getAllUser();
       return res.send({
-        old: olduser,
-        message: "Password changed",
-        data: user1,
+        response: users.response,
       });
     } catch (error) {
       return res.send({
