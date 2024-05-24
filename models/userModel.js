@@ -1,7 +1,5 @@
 const { where } = require("sequelize");
-// const { response } = require("../app");
 const { models } = require("./index");
-const { response } = require("../app");
 
 module.exports = {
   createUser: async (body) => {
@@ -11,8 +9,7 @@ module.exports = {
         response: user,
       };
     } catch (error) {
-      console.log(error);
-      return { message: error.message };
+      return error;
     }
   },
   getUser: async (userId, userName) => {
@@ -33,11 +30,35 @@ module.exports = {
     try {
       const user = await models.users.findAll({
         attributes: {
-          exclude: ["password", "deletedAt"],
+          exclude: ["password"],
         },
-        // attributes: ["userID", "userName"],
+        // attributes: ["userId", "userName"],
       });
       return { response: user };
+    } catch (error) {
+      return { message: error.message };
+    }
+  },
+  deleteUser: async (userId) => {
+    try {
+      const deleteUser = await models.users.destroy({
+        where: { userId: userId },
+      });
+      return { message: "user Deleted", response: deleteUser };
+    } catch (error) {
+      return { message: error.message };
+    }
+  },
+  updateUser: async (userId, ...body) => {
+    try {
+      const updateUser = await models.users.update(
+        { ...body },
+        {
+          where: { userId: userId },
+        }
+      );
+      console.log(updateUser);
+      return { message: "user Updated", response: updateUser };
     } catch (error) {
       return { message: error.message };
     }

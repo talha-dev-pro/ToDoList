@@ -5,7 +5,7 @@ class users extends Model {}
 
 users.init(
   {
-    userID: {
+    userId: {
       primaryKey: true,
       type: DataTypes.STRING(255),
     },
