@@ -9,6 +9,11 @@ tasks.init(
       primaryKey: true,
       type: DataTypes.STRING(255),
     },
+    taskName: {
+      allowNull: false,
+      type: DataTypes.STRING(255),
+    },
+    taskInfo: { type: DataTypes.STRING(1000) },
   },
   {
     timestamps: true,

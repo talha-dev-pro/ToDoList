@@ -52,9 +52,7 @@ module.exports = {
   },
   updateUser: async (body) => {
     try {
-      // console.log({ ...body });
-      const updateUser = await userModel.updateUser(body.userId, { ...body });
-      // console.log(updateUser);
+      const updateUser = await userModel.updateUser({ ...body });
       if (updateUser.error || !updateUser.response[0]) {
         return {
           error: {

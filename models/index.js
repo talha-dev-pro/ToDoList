@@ -9,7 +9,7 @@ const models = { users, tasks, userHasTasks, tasksHasUsers };
 
 const db = {};
 db.sequelize = sequelize; //created new key in db object
-sequelize.models = models; //gave value to the sequelize models
+sequelize.models = models; //gave value to the sequelize models (db syncing)
 
 // console.log(db.sequelize.models);
 
