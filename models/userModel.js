@@ -49,14 +49,13 @@ module.exports = {
       return { message: error.message };
     }
   },
-  updateUser: async (userId, ...body) => {
+  updateUser: async (userId, body) => {
     try {
-      const updateUser = await models.users.update(
-        { ...body },
-        {
-          where: { userId: userId },
-        }
-      );
+      console.log(userId);
+      console.log(body);
+      const updateUser = await models.users.update(body, {
+        where: { userId: userId },
+      });
       console.log(updateUser);
       return { message: "user Updated", response: updateUser };
     } catch (error) {
