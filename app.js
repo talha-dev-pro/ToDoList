@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/users", userRoutes);
-app.use("task", taskRoutes);
+app.use("/task", taskRoutes);
 app.use("/auth", authRoutes);
 app.use(adminRoutes);
 
