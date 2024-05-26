@@ -6,10 +6,10 @@ const createTaskSchema = joi.object().keys({
   taskInfo: joi.string().min(0).max(1000),
 });
 const deleteTaskSchema = joi.object().keys({
-  taskName: joi.string().min(3).max(30).required(),
+  taskId: joi.string().required(),
 });
 const updateTaskSchema = joi.object().keys({
-  taskId: joi.string(),
+  taskId: joi.string().required(),
   taskName: joi.string().min(3).max(30),
   taskInfo: joi.string().min(0).max(1000),
 });
@@ -55,18 +55,12 @@ module.exports = {
   deleteTask: async (req, res) => {
     try {
       //try catch is used so that the server should not crash!
-      const validate = await deleteTaskSchema.validateAsync(req.body);
+      const validate = await deleteTaskSchema.validateAsync(req.query);
       const deleteTask = await taskService.deleteTask(validate);
       if (deleteTask.error) {
-        return res.send({
-          error: {
-            message: "Cannot delete Task",
-            error: task.error,
-          },
-        });
+        return res.send(deleteTask.error);
       }
       return res.send({
-        message: "Task deleted",
         response: deleteTask.response,
       });
     } catch (error) {
@@ -75,13 +69,12 @@ module.exports = {
   },
   updateTask: async (req, res) => {
     try {
-      console.log(req.body);
       const validate = await updateTaskSchema.validateAsync(req.body);
       const updateTask = await taskService.updateTask(validate);
       if (updateTask.error) {
         return res.send(updateTask.error);
       }
-      return res.send({ respponse: updateTask });
+      return res.send(updateTask);
     } catch (error) {
       return res.send({ message: error.message });
     }

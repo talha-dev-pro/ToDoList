@@ -1,4 +1,3 @@
-const { response } = require("express");
 const taskModel = require("../models/taskModel");
 const { v4: uuid } = require("uuid");
 
@@ -48,17 +47,24 @@ module.exports = {
   },
   deleteTask: async (body) => {
     try {
-      const deleteTask = await taskModel.deleteTask(body.taskName);
-      if (deleteTask.error) {
-        return { error: { message: "cannot delete", error: deleteTask.error } };
+      const deleteTask = await taskModel.deleteTask(body.taskId);
+      console.log(deleteTask);
+      if (deleteTask.error || !deleteTask.response) {
+        return {
+          error: {
+            message: "Cannot delete Task",
+            error: deleteTask?.error || deleteTask.response,
+          },
+        };
       }
-      return { response: { message: "task Deleted", response: deleteTask } };
+      return { response: deleteTask };
     } catch (error) {
       return { message: error.message };
     }
   },
   updateTask: async (body) => {
     try {
+      console.log(body.taskId);
       const updateTask = await taskModel.updateTask({ ...body });
       if (updateTask.error) {
         return {
@@ -68,8 +74,14 @@ module.exports = {
           },
         };
       }
+      console.log(body.taskId);
+      const getTask = await taskModel.getTask(body.taskId);
       return {
-        response: updateTask,
+        response: {
+          message: "Task updated",
+          updated: updateTask.response,
+          updatedTask: getTask.response,
+        },
       };
     } catch (error) {
       return { message: error.message };

@@ -22,10 +22,10 @@ module.exports = {
       return { message: error.message };
     }
   },
-  deleteTask: async (taskName) => {
+  deleteTask: async (taskId) => {
     try {
       const deleteTask = await models.tasks.destroy({
-        where: { taskName: taskName },
+        where: { taskId: taskId },
       });
       return { message: "Task Deleted", response: deleteTask };
     } catch (error) {
@@ -41,6 +41,16 @@ module.exports = {
       return { response: updateTask };
     } catch (error) {
       return { message: error.message };
+    }
+  },
+  getTask: async (taskId) => {
+    try {
+      const getTask = await models.tasks.findOne({ where: { taskId: taskId } });
+      return {
+        response: getTask,
+      };
+    } catch (error) {
+      return { error: error.message };
     }
   },
 };
