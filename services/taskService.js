@@ -5,9 +5,7 @@ module.exports = {
   createTask: async (body) => {
     try {
       //try catch is used so that the server should not crash!
-      console.log(body);
       body.taskId = uuid();
-      console.log(body);
       const task = await taskModel.createTask(body);
       if (task.error) {
         return {
@@ -48,7 +46,6 @@ module.exports = {
   deleteTask: async (body) => {
     try {
       const deleteTask = await taskModel.deleteTask(body.taskId);
-      console.log(deleteTask);
       if (deleteTask.error || !deleteTask.response) {
         return {
           error: {
@@ -64,7 +61,6 @@ module.exports = {
   },
   updateTask: async (body) => {
     try {
-      console.log(body.taskId);
       const updateTask = await taskModel.updateTask({ ...body });
       if (updateTask.error) {
         return {
@@ -74,7 +70,6 @@ module.exports = {
           },
         };
       }
-      console.log(body.taskId);
       const getTask = await taskModel.getTask(body.taskId);
       return {
         response: {

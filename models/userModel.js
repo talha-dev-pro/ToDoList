@@ -32,13 +32,17 @@ module.exports = {
         attributes: {
           exclude: ["password"],
         },
-        // attributes: ["userId", "userName"],
+        include: {
+          model: models.tasks,
+          exclude: ["userId"],
+        },
       });
       return { response: user };
     } catch (error) {
       return { message: error.message };
     }
   },
+
   deleteUser: async (userId) => {
     try {
       const deleteUser = await models.users.destroy({
@@ -49,6 +53,7 @@ module.exports = {
       return { message: error.message };
     }
   },
+
   updateUser: async ({ userId, ...body }) => {
     try {
       const updateUser = await models.users.update(

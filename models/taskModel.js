@@ -14,7 +14,11 @@ module.exports = {
     try {
       const task = await models.tasks.findAll({
         attributes: {
-          exclude: ["deletedAt"],
+          exclude: ["deletedAt", "userId"],
+        },
+        include: {
+          model: models.users,
+          attributes: ["userId", "userName"],
         },
       });
       return { response: task };

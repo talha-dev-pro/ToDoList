@@ -3,6 +3,7 @@ const joi = require("joi");
 
 const createTaskSchema = joi.object().keys({
   taskName: joi.string().min(3).max(30).required(),
+  userId: joi.string().required(),
   taskInfo: joi.string().min(0).max(1000),
 });
 const deleteTaskSchema = joi.object().keys({

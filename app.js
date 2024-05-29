@@ -7,6 +7,7 @@ var userRoutes = require("./routes/userRouter");
 var authRoutes = require("./routes/authRouter");
 var adminRoutes = require("./routes/adminRouter");
 var taskRoutes = require("./routes/taskRouter");
+var sessionRoutes = require("./routes/sessionRouter");
 
 var app = express();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 app.use("/users", userRoutes);
 app.use("/task", taskRoutes);
+app.use(sessionRoutes);
 app.use("/auth", authRoutes);
 app.use(adminRoutes);
 
