@@ -2,24 +2,25 @@ const joi = require("joi");
 const authService = require("../services/authServices");
 
 const loginSchema = joi.object().keys({
-  userName: joi.string().email().required(),
+  userName: joi.string().required(),
   password: joi.string().min(6).max(18).required(),
 });
 
 module.exports = {
   login: async (req, res) => {
     try {
-      //const validate = await loginSchema.validateAsync(req.query); //await must be used for validate(which is promise) and is used in async function
+      //await must be used for a promise function (validate)
       const validate = await loginSchema.validateAsync(req.body);
-      console.log("in controller", ({ userName, password } = validate));
-      const valService = await authService.createUser(validate);
-      console.log(
-        "after service and model updates",
-        ({ userName, password } = valService)
-      );
+      const login = await authService.login(validate);
+      if (login.error) {
+        return res.send({
+          error: login.error,
+        });
+      }
+      res.cookie("auth", login.response.token);
+      delete login.response.token;
       return res.send({
-        message: "User is logged in",
-        data: valService,
+        response: login.response,
       });
     } catch (error) {
       return res.send({

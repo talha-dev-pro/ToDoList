@@ -5,8 +5,9 @@ const {
   deleteUser,
   updateUser,
 } = require("../controllers/userController");
+const { middleware } = require("../middleware");
 
-route.get("/getAllUsers", getAllUsers);
+route.get("/getAllUsers", middleware, getAllUsers);
 route.post("/createUser", createUser);
 route.delete("/deleteUser", deleteUser);
 route.put("/updateUser", updateUser);

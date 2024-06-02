@@ -48,6 +48,7 @@ module.exports = {
   },
   getAllUsers: async (req, res) => {
     try {
+      console.log(req.userData);
       const users = await userService.getAllUser();
       return res.send({
         response: users.response,

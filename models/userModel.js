@@ -18,6 +18,9 @@ module.exports = {
         ...(userId
           ? { where: { userId: userId } }
           : { where: { userName: userName } }),
+        attributes: {
+          exclude: ["deletedAt", "createdAt", "updatedAt"],
+        },
       });
       return {
         response: user,
