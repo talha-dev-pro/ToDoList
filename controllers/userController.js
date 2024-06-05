@@ -13,6 +13,14 @@ const updateUserSchema = joi.object().keys({
 const deleteUserSchema = joi.object().keys({
   userId: joi.array().single().required(),
 });
+const getUserSchema = joi.object().keys({
+  pageNo: joi.number().min(1).required(),
+  limit: joi.number().valid(5, 10).required(),
+  createdAt: joi.string(),
+  userName: joi.string(),
+  sortBy: joi.string().valid("createdAt", "userName", "userId"),
+  orderBy: joi.string().valid("DESC", "ASC"),
+});
 
 module.exports = {
   createUser: async (req, res) => {
@@ -48,8 +56,8 @@ module.exports = {
   },
   getAllUsers: async (req, res) => {
     try {
-      console.log(req.userData);
-      const users = await userService.getAllUser();
+      const validate = await getUserSchema.validateAsync(req.query);
+      const users = await userService.getAllUser(validate);
       return res.send({
         response: users.response,
       });

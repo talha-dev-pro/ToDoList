@@ -23,9 +23,10 @@ module.exports = {
       return { message: error.message };
     }
   },
-  getAllUser: async () => {
+  getAllUser: async (query) => {
     try {
-      const users = await userModel.getAllUsers();
+      query.offset = (query.pageNo - 1) * query.limit;
+      const users = await userModel.getAllUsers(query);
       if (users.error) return { error: users.message };
       return { response: users.response };
     } catch (error) {

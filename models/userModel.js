@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+const { where, Op } = require("sequelize");
 const { models } = require("./index");
 
 module.exports = {
@@ -29,9 +29,15 @@ module.exports = {
       return { message: error.message };
     }
   },
-  getAllUsers: async () => {
+  getAllUsers: async (query) => {
     try {
       const user = await models.users.findAll({
+        where: {
+          ...(query.userName
+            ? { userName: { [Op.iLike]: `%${query.userName}%` } }
+            : true),
+          ...(query.createdAt ? query.createdAt : true),
+        },
         attributes: {
           exclude: ["password"],
         },
@@ -39,9 +45,22 @@ module.exports = {
           model: models.tasks,
           exclude: ["userId"],
         },
+        offset: query.offset,
+        limit: query.limit,
+        order: [
+          [
+            query?.sortBy || "createdAt",
+            query?.orderBy || "ASC",
+            // query.sortBy ? query.sortBy : "createdAt",
+            // query.orderBy ? query.orderBy : "ASC",
+            // ...(query.sortBy ? query.sortBy : "createdAt"),
+            // ...(query.orderBy ? query.orderBy : "ASC"),
+          ],
+        ],
       });
       return { response: user };
     } catch (error) {
+      console.log(error);
       return { message: error.message };
     }
   },
