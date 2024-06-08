@@ -1,5 +1,3 @@
-const { hash } = require("bcryptjs");
-const { v4: uuid } = require("uuid");
 const userModel = require("../models/userModel");
 
 module.exports = {
@@ -23,10 +21,10 @@ module.exports = {
       return { message: error.message };
     }
   },
-  getAllUser: async (query) => {
+  getAllUser: async (query, userId, role) => {
     try {
       query.offset = (query.pageNo - 1) * query.limit;
-      const users = await userModel.getAllUsers(query);
+      const users = await userModel.getAllUsers(query, userId, role);
       if (users.error) return { error: users.message };
       return { response: users.response };
     } catch (error) {

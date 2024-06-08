@@ -5,6 +5,7 @@ const createUserSchema = joi.object().keys({
   userName: joi.string().alphanum().min(3).max(34).required(),
   password: joi.string().min(6).max(18).required(),
   confirmPassword: joi.ref("password"),
+  role: joi.string().valid("user", "admin").required(),
 });
 const updateUserSchema = joi.object().keys({
   userId: joi.string().required(),
@@ -56,8 +57,10 @@ module.exports = {
   },
   getAllUsers: async (req, res) => {
     try {
+      const userId = req.userData.userId;
+      const role = req.userData.role;
       const validate = await getUserSchema.validateAsync(req.query);
-      const users = await userService.getAllUser(validate);
+      const users = await userService.getAllUser(validate, userId, role);
       return res.send({
         response: users.response,
       });

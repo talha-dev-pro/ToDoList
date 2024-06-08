@@ -20,6 +20,12 @@ users.init(
       allowNull: false,
       type: DataTypes.STRING(1000),
     },
+    role: {
+      allowNull: false,
+      defaultValue: "user",
+      type: DataTypes.ENUM,
+      values: ["user", "admin"],
+    },
   },
   {
     timestamps: true,

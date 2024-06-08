@@ -29,10 +29,11 @@ module.exports = {
       return { message: error.message };
     }
   },
-  getAllUsers: async (query) => {
+  getAllUsers: async (query, userId, role) => {
     try {
       const user = await models.users.findAll({
         where: {
+          ...(role == "admin" ? true : { userId: userId }),
           ...(query.userName
             ? { userName: { [Op.iLike]: `%${query.userName}%` } }
             : true),
