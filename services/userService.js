@@ -9,15 +9,15 @@ module.exports = {
       if (isUser.error || isUser.response) {
         return { error: "user already exists" };
       }
-      body.password = await hash(body.password, 10);
-      body.userId = uuid();
+      // body.password = await hash(body.password, 10); //applied this using hooks in the user table definitions
+      // body.userId = uuid(); //applied this using hooks in the user table definitions
       const user = await userModel.createUser(body);
       if (user.error) {
         return {
           error: user.error,
         };
       }
-      delete user.response.dataValues.password;
+      // delete user.response.dataValues.password; //applied this using hooks in the user table definitions
       return { response: user.response.dataValues };
     } catch (error) {
       return { message: error.message };

@@ -5,7 +5,7 @@ module.exports = {
   createTask: async (body) => {
     try {
       //try catch is used so that the server should not crash!
-      body.taskId = uuid();
+      //body.taskId = uuid(); //applied this using hooks in the user table definitions
       const task = await taskModel.createTask(body);
       if (task.error) {
         return {

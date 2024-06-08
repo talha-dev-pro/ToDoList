@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../../bin/dbConnection");
 const users = require("./users");
+const { v4: uuid } = require("uuid");
 
 class tasks extends Model {}
 
@@ -33,5 +34,9 @@ tasks.init(
     sequelize,
   }
 );
+
+tasks.beforeCreate(async (task) => {
+  task.taskId = uuid();
+});
 
 module.exports = tasks;
