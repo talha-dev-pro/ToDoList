@@ -1,15 +1,29 @@
 require("dotenv").config();
 const { verify } = require("jsonwebtoken");
+const sessionModel = require("./models/sessionModel");
 
 module.exports = {
   middleware: async (req, res, next) => {
     try {
-      const token = req.cookies.auth;
+      let { token, userId } = req.cookies.auth;
+      console.log(userId);
+
       if (token === "undefined") {
         return res.send({
           response: "unauthorized user",
         });
       }
+
+      const isSession = await sessionModel.getSession(userId, token);
+
+      if (isSession.error || !isSession.response) {
+        return res.send({
+          response: "unauthorized user",
+        });
+      }
+
+      token = isSession.response.dataValues.token;
+
       verify(token, process.env.SECRET, (error, data) => {
         if (error) {
           return res.send({
@@ -27,12 +41,23 @@ module.exports = {
   },
   admin: async (req, res, next) => {
     try {
-      const token = req.cookies.auth;
+      let { token, userId } = req.cookies.auth;
+      console.log(userId);
+
       if (token === "undefined") {
         return res.send({
           response: "unauthorized user",
         });
       }
+
+      const isSession = await sessionModel.getSession(userId, token);
+
+      if (isSession.error || !isSession.response) {
+        return res.send({
+          response: "unauthorized user",
+        });
+      }
+
       verify(token, process.env.SECRET, (error, data) => {
         if (error) {
           return res.send({

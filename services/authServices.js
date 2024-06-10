@@ -2,39 +2,77 @@ require("dotenv").config();
 const { compare } = require("bcryptjs");
 const userModel = require("../models/userModel");
 const { sign } = require("jsonwebtoken");
+const sessionModel = require("../models/sessionModel");
 
 module.exports = {
   login: async (body) => {
     try {
-      const getUser = await userModel.getUser(false, body.userName);
-      if (getUser.error || !getUser.response) {
+      const user = await userModel.getUser(false, body.userName);
+      if (user.error || !user.response) {
         return {
           error: {
             message: "user not found",
-            error: getUser?.error || getUser.response,
+            error: user?.error || user.response,
+            session: "undefined",
           },
         };
       }
       const isValid = await compare(
         body.password,
-        getUser.response.dataValues.password
+        user.response.dataValues.password
       );
       if (!isValid) {
         return {
           response: {
             message: "invalid credentials",
             response: isValid,
-            token: undefined,
+            session: "undefined",
           },
         };
       }
-      delete getUser.response.dataValues.password;
-      const token = sign(getUser.response.dataValues, process.env.SECRET);
+      const userId = user.response.dataValues.userId;
+      delete user.response.dataValues.password;
+      const token = sign(user.response.dataValues, process.env.SECRET);
+
+      const isSession = await sessionModel.getSession(userId, false);
+      if (isSession.error || isSession.response) {
+        if (isSession.error) {
+          return {
+            response: {
+              message: "invalid credentials",
+              response: isValid,
+              session: "undefined",
+            },
+          };
+        }
+
+        const deleteSession = await sessionModel.deleteSession(userId);
+        if (deleteSession.error || !deleteSession.response) {
+          return {
+            response: {
+              message: "invalid credentials",
+              response: isValid,
+              session: "undefined",
+            },
+          };
+        }
+      }
+      const session = await sessionModel.createSession({ userId, token });
+      if (session.error) {
+        return {
+          response: {
+            message: "invalid credentials",
+            response: isValid,
+            session: "undefined",
+          },
+        };
+      }
+
       return {
         response: {
           message: "Logged in successfuly",
           response: isValid,
-          token: token,
+          session: session.response,
         },
       };
     } catch (error) {

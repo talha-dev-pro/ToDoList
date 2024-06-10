@@ -2,34 +2,36 @@ const { where } = require("sequelize");
 const { models } = require("./index");
 
 module.exports = {
-  createSession: async (body) => {
+  createSession: async ({ ...body }) => {
     try {
-      const createSession = await models.sessions.create({ ...body });
+      const session = await models.sessions.create({ ...body });
       return {
-        response: createSession,
+        response: session,
       };
     } catch (error) {
       return { error: error.message };
     }
   },
-  deleteSession: async (sessionId) => {
+  deleteSession: async (userId) => {
     try {
-      const deleteSession = await models.sessions.destroy({
-        where: { sessionId: sessionId },
-      });
-      return {
-        response: deleteSession,
-      };
-    } catch (error) {
-      return { error: error.message };
-    }
-  },
-  getSession: async (token, userId) => {
-    try {
-      const getSession = await models.sessions.findOne({
+      const session = await models.sessions.destroy({
         where: { userId: userId },
       });
-      return { response: getSession };
+      return {
+        response: session,
+      };
+    } catch (error) {
+      return { error: error.message };
+    }
+  },
+  getSession: async (userId, token) => {
+    try {
+      const session = await models.sessions.findOne({
+        ...(token
+          ? { where: { userId: userId } || { token: token } }
+          : { where: { userId: userId } }),
+      });
+      return { response: session };
     } catch (error) {
       return { error: error.message };
     }
